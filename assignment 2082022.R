@@ -167,8 +167,8 @@ paste0(rep(c("X","Y"),5),1:10)
 2+(3^2^3) # ^ function is operated first
 x <- y <- z <- 0; x; y; z
 # first z assigned 0 then y=z=0 then x=y=z=0
-3+3/2  # division first
-2:3+2 #first  2:3 sequence then +2 to each element
+(3+3)/2  # addition first
+2:3+2 #first +2 to each element then sequence operator
 2:-3 #sequence 2 to -3 in steps of -1
 2 > 2:-3   # sequence is formed and then it is tested if the values of the sequence are lesser than 2
 
@@ -187,3 +187,65 @@ write.table(dat_new,"house_copy_new.txt")
 
 df=read.csv(file = "cars.csv",header = T)
 head(df)
+
+
+
+
+
+#Assignment 
+#prob-1
+ #To find the structure of an R object
+x <- list(1:12,"a",T,2+1i)
+class(x)
+typeof(x)
+y <- matrix(1:12,2)
+y
+typeof(y)
+class(y)
+z <- data.frame(1:12,3);z 
+typeof(z)
+class(z)
+
+# so to conclude we can say class() function is used to find the data structure in R
+
+#prob-2
+p <- 1:10
+p_even <- p[p%%2==0] # finding the even numbers from the vector of numbers
+
+#prob-3
+#counting the number of even numbers in the vector
+length(p_even)
+
+#prob-4
+?seq
+g <- seq(1,10,2.25); g
+g1 <- seq(1,10,length.out=5); g1
+
+
+#prob-5
+f <- LETTERS[seq(1,15,length.out=5)] ;f  # use of length.out function in the vector of characters 
+f_1 <- letters[seq(1,15,along.with=f)] ; f_1   # use of along.with in the vector 
+# along.with function takes the length.out value from the mentioned vector or sequence and creates the new vector with the same number of values whereas length.out is used to specify the number of elements of the sequence that the vector should contain
+
+
+#prob-6
+v1 <- c('a','b','c','a','c')
+v2 <- ifelse(v1=='a',2,0)
+
+
+#prob-7
+((3 * (2 ^ T)) | (2 + 2) / (3 : 1))
+
+#prob-8
+m <- matrix(1:6, nrow = 4, ncol = 3) ;m
+m[m%%3==0] <- 0
+m
+
+
+#prob-9
+l1 <- list(v1=c("A","B","c","D"),v2=5:8) ;l1
+df <- as.data.frame(do.call(cbind, l1),row.names = c("r1","r2","r3","r4")) ; df
+
+#prob- 10
+ m1 <- matrix(letters,ncol=25) ; m1
+ 
