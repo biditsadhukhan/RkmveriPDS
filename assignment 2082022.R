@@ -255,9 +255,9 @@ df <- as.data.frame(do.call(cbind, l1),row.names = c("r1","r2","r3","r4")) ; df
  m1 <- matrix(letters,ncol=25) ; m1
  m2 <- matrix(m1[m1!=c("a","b")],nrow =length(m1[m1!=c("a","b")])/2)
 m2
-length(m1[m1!=c("a","b")])/2
+ #length(m1[m1!=c("a","b")])/2
 
-
-m3 <- matrix(as.numeric(factor(m2)),nrow = nrow(m2)); m3
+#prob-11,12
+m3 <- matrix(as.numeric(factor(m2)),nrow = nrow(m2)); m3+9
 
 
