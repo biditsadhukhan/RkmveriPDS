@@ -198,15 +198,18 @@ head(df)
 x <- list(1:12,"a",T,2+1i)
 class(x)
 typeof(x)
+str(x)
 y <- matrix(1:12,2)
 y
 typeof(y)
 class(y)
+str(y)
 z <- data.frame(1:12,3);z 
 typeof(z)
 class(z)
+str(z)
 
-# so to conclude we can say class() function is used to find the data structure in R
+# so to conclude we can say str() function is used to find the data structure in R
 
 #prob-2
 p <- 1:10
@@ -245,7 +248,16 @@ m
 #prob-9
 l1 <- list(v1=c("A","B","c","D"),v2=5:8) ;l1
 df <- as.data.frame(do.call(cbind, l1),row.names = c("r1","r2","r3","r4")) ; df
+#do.call constructs and executes a function call from a name or a function and a list of arguments to be passed to it
+
 
 #prob- 10
  m1 <- matrix(letters,ncol=25) ; m1
- 
+ m2 <- matrix(m1[m1!=c("a","b")],nrow =length(m1[m1!=c("a","b")])/2)
+m2
+length(m1[m1!=c("a","b")])/2
+
+
+m3 <- matrix(as.numeric(factor(m2)),nrow = nrow(m2)); m3
+
+
