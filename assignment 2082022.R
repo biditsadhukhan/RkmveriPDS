@@ -1,4 +1,14 @@
+#Name- Bidit Sadhukhan
+#Assignment-31/8/22
+
+
+
+
 rm(list = ls())
+
+
+
+
 
 
 #Exercise R part-1, page-7
@@ -185,7 +195,7 @@ head(dat_new)
 write.table(dat_new,"house_copy_new.txt")
 
 
-df=read.csv(file = "cars.csv",header = T)
+df=read.csv(file = "cars.csv",header = T,sep = ";")
 head(df)
 
 
