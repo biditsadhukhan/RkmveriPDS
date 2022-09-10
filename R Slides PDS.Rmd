@@ -1,0 +1,76 @@
+---
+title: "R Slides PDS"
+author: "Bidit Sadhukhan"
+date: "`r Sys.Date()`"
+output: 
+  html_document: 
+    theme: readable
+    number_sections: yes
+    toc: yes
+    highlight: pygments
+    df_print: kable
+---
+
+
+# Slide-3 
+## R data structures and functions
+
+1. Given the following vectors use mapply to find the sum of all the first elements of the numerical vectors, sum of all the second elements and so on
++ v1 <- c(1,4,9,1)
+
++ v2 <- c('a','b','b','a')
+
++ v3 <- c(2,3,4,1)
+
++ v4 <- c(3,1,3,1)
+```{r}
+v1 <- c(1,4,9,1);v1
+v2 <- c("a","b","b","a");v2
+v3 <- c(2,3,4,1);v3
+v4 <- c(3,1,3,1);v4
+mapply(sum,v1,v3,v4)
+```
+2. Create 3 vectors of the same length containing information about the age, marks, number of books read in a year and the gender for 5 students in a class.
+Combine these vectors into a dataframe. Use tapply function to find the average number of marks obtained for each gender group and the min number of books
+read for each gender group.
+```{r}
+set.seed(2569)
+age <- sample(10:15,5);age
+marks <- round(runif(5,25,100),1);marks
+no_books <- sample(0:10,5);no_books
+gender <- sample(c("M","F"),5, replace = T);gender
+df <-  data.frame(age,marks,no_books,gender);df
+tapply(df$marks,df$gender, mean)
+tapply(df$no_books,df$gender,min)
+```
+
+3. With the above dataframe created use the apply function to find the average marks obtained by the students, average number of books read and the average
+age of the students.
+```{r}
+apply(df[,1:3],2,mean)
+```
+4. Create a matrix using the 3 numerical vectors and use the apply function to find the average marks obtained by the students, average number of books read and
+the average age of the students.
+```{r}
+m <- matrix(c(age,marks,no_books),nrow=5,dimnames = list(1:5,c("age","marks","no.books")));m
+round(apply(m,2,mean))
+```
+5. With the above dataframe created use the lapply function to find the average marks obtained by the students, average number of books read and the average
+age of the students.
+```{r}
+lapply(df[,1:3],mean)
+```
+6. Create 2 vectors of the same length containing the before training and after training measurement of competency on a scale of 1-10 for 5 students. For example,
+let vector 1 contains the pre-training competency score of the 5 students as 2,7,4,9,6 and the post training competency score as 5,6,7,6,6 respectively. Use
+mapply on these 2 vectors to find the difference between post and pre scores. Hint: use minus operator with quotes as a supplied function, i.e. mapply('-',...)
+```{r}
+set.seed(2589)
+v1 <- sample(1:10,5);v1
+v2 <- sample(1:10,5);v2
+mapply('-',v1,v2)
+```
+
+### Session Info
+```{r}
+sessionInfo()
+```
