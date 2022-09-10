@@ -7,7 +7,7 @@ output:
     theme: readable
     number_sections: yes
     toc: yes
-    highlight: pygments
+    highlight: zenburn
     df_print: kable
 ---
 
