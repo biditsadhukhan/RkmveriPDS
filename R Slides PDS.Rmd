@@ -70,6 +70,15 @@ v2 <- sample(1:10,5);v2
 mapply('-',v1,v2)
 ```
 
+
+# Assignment-2
+1. Specieswise tabulate number of missing values for the column root of the data frame rainforest (DAAG) Hint: use complete.cases
+```{r}
+library(DAAG)
+df3 <- rainforest
+with(df3,table(complete.cases(root),species))
+
+```
 ### Session Info
 ```{r}
 sessionInfo()

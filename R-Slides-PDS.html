@@ -11,7 +11,7 @@
 
 <meta name="author" content="Bidit Sadhukhan" />
 
-<meta name="date" content="2022-09-10" />
+<meta name="date" content="2022-09-11" />
 
 <title>R Slides PDS</title>
 
@@ -449,7 +449,7 @@ pre code {
 
 <h1 class="title toc-ignore">R Slides PDS</h1>
 <h4 class="author">Bidit Sadhukhan</h4>
-<h4 class="date">2022-09-10</h4>
+<h4 class="date">2022-09-11</h4>
 
 </div>
 
@@ -458,10 +458,11 @@ pre code {
 <li><a href="#slide-3" id="toc-slide-3"><span class="toc-section-number">1</span> Slide-3</a>
 <ul>
 <li><a href="#r-data-structures-and-functions" id="toc-r-data-structures-and-functions"><span class="toc-section-number">1.1</span> R data structures and
-functions</a>
-<ul>
-<li><a href="#session-info" id="toc-session-info"><span class="toc-section-number">1.1.1</span> Session Info</a></li>
+functions</a></li>
 </ul></li>
+<li><a href="#assignment-2" id="toc-assignment-2"><span class="toc-section-number">2</span> Assignment-2</a>
+<ul>
+<li><a href="#session-info" id="toc-session-info"><span class="toc-section-number">2.0.1</span> Session Info</a></li>
 </ul></li>
 </ul>
 </div>
@@ -612,9 +613,24 @@ with quotes as a supplied function, i.e. mapply(‘-’,…)</li>
 <pre><code>## [1] 1 3 9 4 6</code></pre>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(<span class="st">&#39;-&#39;</span>,v1,v2)</span></code></pre></div>
 <pre><code>## [1]  1  4 -6 -3  3</code></pre>
-<div id="session-info" class="section level3" number="1.1.1">
-<h3><span class="header-section-number">1.1.1</span> Session Info</h3>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+</div>
+</div>
+<div id="assignment-2" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Assignment-2</h1>
+<ol style="list-style-type: decimal">
+<li>Specieswise tabulate number of missing values for the column root of
+the data frame rainforest (DAAG) Hint: use complete.cases</li>
+</ol>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DAAG)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>df3 <span class="ot">&lt;-</span> rainforest</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df3,<span class="fu">table</span>(<span class="fu">complete.cases</span>(root),species))</span></code></pre></div>
+<pre><code>##        species
+##         Acacia mabellae C. fraseri Acmena smithii B. myrtifolia
+##   FALSE               7         12             26             7
+##   TRUE                9          0              0             4</code></pre>
+<div id="session-info" class="section level3" number="2.0.1">
+<h3><span class="header-section-number">2.0.1</span> Session Info</h3>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
 <pre><code>## R version 4.2.1 (2022-06-23 ucrt)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 10 x64 (build 22000)
@@ -629,14 +645,21 @@ with quotes as a supplied function, i.e. mapply(‘-’,…)</li>
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
+## other attached packages:
+## [1] DAAG_1.25.4
+## 
 ## loaded via a namespace (and not attached):
-##  [1] digest_0.6.29   R6_2.5.1        jsonlite_1.8.0  magrittr_2.0.3 
-##  [5] evaluate_0.16   highr_0.9       stringi_1.7.8   rlang_1.0.4    
-##  [9] cachem_1.0.6    cli_3.3.0       jquerylib_0.1.4 bslib_0.4.0    
-## [13] rmarkdown_2.16  tools_4.2.1     stringr_1.4.1   xfun_0.32      
-## [17] yaml_2.3.5      fastmap_1.1.0   compiler_4.2.1  htmltools_0.5.3
-## [21] knitr_1.40      sass_0.4.2</code></pre>
-</div>
+##  [1] Rcpp_1.0.9          knitr_1.40          magrittr_2.0.3     
+##  [4] lattice_0.20-45     R6_2.5.1            jpeg_0.1-9         
+##  [7] rlang_1.0.4         fastmap_1.1.0       interp_1.1-3       
+## [10] stringr_1.4.1       highr_0.9           rbibutils_2.2.9    
+## [13] tools_4.2.1         grid_4.2.1          xfun_0.32          
+## [16] png_0.1-7           latticeExtra_0.6-30 cli_3.3.0          
+## [19] deldir_1.0-6        jquerylib_0.1.4     htmltools_0.5.3    
+## [22] yaml_2.3.5          digest_0.6.29       RColorBrewer_1.1-3 
+## [25] Rdpack_2.4          sass_0.4.2          cachem_1.0.6       
+## [28] evaluate_0.16       rmarkdown_2.16      stringi_1.7.8      
+## [31] compiler_4.2.1      bslib_0.4.0         jsonlite_1.8.0</code></pre>
 </div>
 </div>
 
