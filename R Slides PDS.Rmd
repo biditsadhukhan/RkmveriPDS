@@ -150,12 +150,37 @@ bmi more than 22.96 and lbm more than or equal to 63 and sport is NOT any of the
       
 ```{r}
 library(DAAG)
+#a)
 df <- ais
-quantile(df$wt)
-tab_breaks <- with(df, seq(37.80,123.20,(123.2-37.8)/10))
+mini <- quantile(df$wt,probs = 0)
+maxi <- quantile(df$wt,probs = 1)
+tab_breaks <- with(df, seq(mini,maxi,(maxi-mini)/10))
 
 df$factor_wt <- with(df, cut(wt,tab_breaks,labels=LETTERS[1:10],include.lowest=TRUE))
 head(df)
+
+#b)i)
+f3 <- function(x,y,z)
+{
+  if(x>22.6 & y>= 63 & !(z %in% c("B_Ball","Field","Gym")))
+  {
+    changed <- "A"
+  }
+    else{
+      changed <- "B"
+    }
+  
+}
+df$changed <- as.factor(mapply(f3,df$bmi,df$lbm,df$sport))
+str(df)
+
+
+#b) ii)
+library(dplyr)
+ 
+ df %>%
+   filter(bmi>22.6 & lbm >= 63 ) %>%
+  filter(!(sport %in% c("B_Ball","Field","Gym")))
 ```
 
 6. Using the dataframe ais (DAAG) create a new column using the sport column so that the "_" in the names is removed, i.e. B_Ball becomes BBall, etc. 
