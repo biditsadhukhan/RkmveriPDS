@@ -11,7 +11,7 @@
 
 <meta name="author" content="Bidit Sadhukhan" />
 
-<meta name="date" content="2022-09-11" />
+<meta name="date" content="2022-09-18" />
 
 <title>R Slides PDS</title>
 
@@ -449,7 +449,7 @@ pre code {
 
 <h1 class="title toc-ignore">R Slides PDS</h1>
 <h4 class="author">Bidit Sadhukhan</h4>
-<h4 class="date">2022-09-11</h4>
+<h4 class="date">2022-09-18</h4>
 
 </div>
 
@@ -623,14 +623,2443 @@ the data frame rainforest (DAAG) Hint: use complete.cases</li>
 </ol>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DAAG)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>df3 <span class="ot">&lt;-</span> rainforest</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df3,<span class="fu">table</span>(<span class="fu">complete.cases</span>(root),species))</span></code></pre></div>
-<pre><code>##        species
-##         Acacia mabellae C. fraseri Acmena smithii B. myrtifolia
-##   FALSE               7         12             26             7
-##   TRUE                9          0              0             4</code></pre>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df3,<span class="fu">aggregate</span>(root <span class="sc">~</span> species,df3,<span class="cf">function</span>(root){<span class="fu">sum</span>(<span class="fu">is.na</span>(root))},<span class="at">na.action =</span> <span class="cn">NULL</span>))</span></code></pre></div>
+<div class="kable-table">
+<table>
+<thead>
+<tr class="header">
+<th align="left">species</th>
+<th align="right">root</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Acacia mabellae</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">C. fraseri</td>
+<td align="right">12</td>
+</tr>
+<tr class="odd">
+<td align="left">Acmena smithii</td>
+<td align="right">26</td>
+</tr>
+<tr class="even">
+<td align="left">B. myrtifolia</td>
+<td align="right">7</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>For each column of the data frame Pima.tr2 (MASS ), determine the
+number of missing values, broken down by type.</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>with sapply, and subset command.</li>
+<li>with by</li>
+<li>with group by</li>
+<li>with aggregate</li>
+</ol>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;MASS&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     select</code></pre>
+<pre><code>## The following object is masked from &#39;package:DAAG&#39;:
+## 
+##     hills</code></pre>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>df4 <span class="ot">&lt;-</span>  Pima.tr2</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">search</span>()   <span class="co"># to see the order of package as there was a statement in R attaching hill from DAAG package</span></span></code></pre></div>
+<pre><code>##  [1] &quot;.GlobalEnv&quot;        &quot;package:MASS&quot;      &quot;package:dplyr&quot;    
+##  [4] &quot;package:DAAG&quot;      &quot;package:stats&quot;     &quot;package:graphics&quot; 
+##  [7] &quot;package:grDevices&quot; &quot;package:utils&quot;     &quot;package:datasets&quot; 
+## [10] &quot;package:methods&quot;   &quot;Autoloads&quot;         &quot;package:base&quot;</code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>f4 <span class="ot">&lt;-</span> <span class="cf">function</span>(x)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">is.na</span>(x))</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co">#a)</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (lev <span class="cf">in</span> <span class="fu">levels</span>(df4<span class="sc">$</span>type)) {</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">sapply</span>(<span class="fu">subset</span>(df4,type<span class="sc">==</span>lev),f4))</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## npreg   glu    bp  skin   bmi   ped   age  type 
+##     0     0     5    60     2     0     0     0 
+## npreg   glu    bp  skin   bmi   ped   age  type 
+##     0     0     8    38     1     0     0     0</code></pre>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co">#b)</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df4,<span class="fu">by</span>(df4,type,<span class="cf">function</span>(x){<span class="fu">sapply</span>(x,f4)}))</span></code></pre></div>
+<pre><code>## type: No
+## npreg   glu    bp  skin   bmi   ped   age  type 
+##     0     0     5    60     2     0     0     0 
+## ------------------------------------------------------------ 
+## type: Yes
+## npreg   glu    bp  skin   bmi   ped   age  type 
+##     0     0     8    38     1     0     0     0</code></pre>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">#c)library(dplyr)</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>df4 <span class="sc">%&gt;%</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">missing_npreg=</span><span class="fu">f4</span>(npreg),</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">missing_glu=</span><span class="fu">f4</span>(glu),</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">missing_bp=</span><span class="fu">f4</span>(bp),</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">missing_skin=</span><span class="fu">f4</span>(skin),</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">missing_bmi =</span> <span class="fu">f4</span>(bmi),</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">missing_ped =</span> <span class="fu">f4</span>(ped),</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">missing_age =</span> <span class="fu">f4</span>(age)</span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>            )</span></code></pre></div>
+<div class="kable-table">
+<table>
+<colgroup>
+<col width="5%" />
+<col width="15%" />
+<col width="13%" />
+<col width="12%" />
+<col width="14%" />
+<col width="13%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">type</th>
+<th align="right">missing_npreg</th>
+<th align="right">missing_glu</th>
+<th align="right">missing_bp</th>
+<th align="right">missing_skin</th>
+<th align="right">missing_bmi</th>
+<th align="right">missing_ped</th>
+<th align="right">missing_age</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">No</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">5</td>
+<td align="right">60</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Yes</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">8</td>
+<td align="right">38</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">#d)</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(df4,<span class="fu">aggregate</span>(df4,<span class="at">by=</span><span class="fu">list</span>(type),f4))</span></code></pre></div>
+<div class="kable-table">
+<table>
+<thead>
+<tr class="header">
+<th align="left">Group.1</th>
+<th align="right">npreg</th>
+<th align="right">glu</th>
+<th align="right">bp</th>
+<th align="right">skin</th>
+<th align="right">bmi</th>
+<th align="right">ped</th>
+<th align="right">age</th>
+<th align="right">type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">No</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">5</td>
+<td align="right">60</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">Yes</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">8</td>
+<td align="right">38</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ol start="3" style="list-style-type: decimal">
+<li>In the data frame rainforest (package - DAAG), use
+table(rainforest$species) to check the names and numbers of each species
+that are present in the data.</li>
+</ol>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>df3 <span class="ot">&lt;-</span> rainforest</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(rainforest<span class="sc">$</span>species)</span></code></pre></div>
+<pre><code>## 
+## Acacia mabellae      C. fraseri  Acmena smithii   B. myrtifolia 
+##              16              12              26              11</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Extract the following subsets from the data frame ais (DAAG):</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>data for the rowers</li>
+<li>data for the rowers, the netballers and the tennis players</li>
+<li>data for the female basketabllers and rowers</li>
+</ol>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DAAG)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> ais</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(df,sport <span class="sc">==</span> <span class="st">&quot;Row&quot;</span>)</span></code></pre></div>
+<div class="kable-table">
+<table style="width:100%;">
+<colgroup>
+<col width="5%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="6%" />
+<col width="5%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">rcc</th>
+<th align="right">wcc</th>
+<th align="right">hc</th>
+<th align="right">hg</th>
+<th align="right">ferr</th>
+<th align="right">bmi</th>
+<th align="right">ssf</th>
+<th align="right">pcBfat</th>
+<th align="right">lbm</th>
+<th align="right">ht</th>
+<th align="right">wt</th>
+<th align="left">sex</th>
+<th align="left">sport</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">14</td>
+<td align="right">4.26</td>
+<td align="right">6.2</td>
+<td align="right">41.0</td>
+<td align="right">13.9</td>
+<td align="right">48</td>
+<td align="right">25.44</td>
+<td align="right">90.2</td>
+<td align="right">17.71</td>
+<td align="right">66.24</td>
+<td align="right">177.9</td>
+<td align="right">80.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">15</td>
+<td align="right">4.63</td>
+<td align="right">6.0</td>
+<td align="right">43.7</td>
+<td align="right">14.7</td>
+<td align="right">30</td>
+<td align="right">22.63</td>
+<td align="right">97.2</td>
+<td align="right">18.77</td>
+<td align="right">57.92</td>
+<td align="right">177.5</td>
+<td align="right">71.3</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">16</td>
+<td align="right">4.36</td>
+<td align="right">5.8</td>
+<td align="right">40.3</td>
+<td align="right">13.3</td>
+<td align="right">29</td>
+<td align="right">21.86</td>
+<td align="right">99.9</td>
+<td align="right">19.83</td>
+<td align="right">56.52</td>
+<td align="right">179.6</td>
+<td align="right">70.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">17</td>
+<td align="right">3.91</td>
+<td align="right">7.3</td>
+<td align="right">37.6</td>
+<td align="right">12.9</td>
+<td align="right">43</td>
+<td align="right">22.27</td>
+<td align="right">125.9</td>
+<td align="right">25.16</td>
+<td align="right">54.78</td>
+<td align="right">181.3</td>
+<td align="right">73.2</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">18</td>
+<td align="right">4.51</td>
+<td align="right">8.3</td>
+<td align="right">43.7</td>
+<td align="right">14.7</td>
+<td align="right">34</td>
+<td align="right">21.27</td>
+<td align="right">69.9</td>
+<td align="right">18.04</td>
+<td align="right">56.31</td>
+<td align="right">179.7</td>
+<td align="right">68.7</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">19</td>
+<td align="right">4.37</td>
+<td align="right">8.1</td>
+<td align="right">41.8</td>
+<td align="right">14.3</td>
+<td align="right">53</td>
+<td align="right">23.47</td>
+<td align="right">98.0</td>
+<td align="right">21.79</td>
+<td align="right">62.96</td>
+<td align="right">185.2</td>
+<td align="right">80.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">20</td>
+<td align="right">4.90</td>
+<td align="right">6.9</td>
+<td align="right">44.0</td>
+<td align="right">14.5</td>
+<td align="right">59</td>
+<td align="right">23.19</td>
+<td align="right">96.8</td>
+<td align="right">22.25</td>
+<td align="right">56.68</td>
+<td align="right">177.3</td>
+<td align="right">72.9</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">21</td>
+<td align="right">4.46</td>
+<td align="right">5.7</td>
+<td align="right">39.2</td>
+<td align="right">13.0</td>
+<td align="right">43</td>
+<td align="right">23.17</td>
+<td align="right">80.3</td>
+<td align="right">16.25</td>
+<td align="right">62.39</td>
+<td align="right">179.3</td>
+<td align="right">74.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">22</td>
+<td align="right">3.95</td>
+<td align="right">3.3</td>
+<td align="right">36.9</td>
+<td align="right">12.5</td>
+<td align="right">40</td>
+<td align="right">24.54</td>
+<td align="right">74.9</td>
+<td align="right">16.38</td>
+<td align="right">63.05</td>
+<td align="right">175.3</td>
+<td align="right">75.4</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">23</td>
+<td align="right">4.46</td>
+<td align="right">9.5</td>
+<td align="right">41.5</td>
+<td align="right">14.5</td>
+<td align="right">92</td>
+<td align="right">22.96</td>
+<td align="right">83.0</td>
+<td align="right">19.35</td>
+<td align="right">56.05</td>
+<td align="right">174.0</td>
+<td align="right">69.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">24</td>
+<td align="right">5.02</td>
+<td align="right">6.4</td>
+<td align="right">44.8</td>
+<td align="right">15.2</td>
+<td align="right">48</td>
+<td align="right">19.76</td>
+<td align="right">91.0</td>
+<td align="right">19.20</td>
+<td align="right">53.65</td>
+<td align="right">183.3</td>
+<td align="right">66.4</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">25</td>
+<td align="right">4.26</td>
+<td align="right">5.8</td>
+<td align="right">41.2</td>
+<td align="right">14.1</td>
+<td align="right">77</td>
+<td align="right">23.36</td>
+<td align="right">76.2</td>
+<td align="right">17.89</td>
+<td align="right">65.45</td>
+<td align="right">184.7</td>
+<td align="right">79.7</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">26</td>
+<td align="right">4.46</td>
+<td align="right">5.6</td>
+<td align="right">41.1</td>
+<td align="right">14.3</td>
+<td align="right">71</td>
+<td align="right">22.67</td>
+<td align="right">52.6</td>
+<td align="right">12.20</td>
+<td align="right">64.62</td>
+<td align="right">180.2</td>
+<td align="right">73.6</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">27</td>
+<td align="right">4.16</td>
+<td align="right">5.8</td>
+<td align="right">39.8</td>
+<td align="right">13.3</td>
+<td align="right">37</td>
+<td align="right">24.24</td>
+<td align="right">111.1</td>
+<td align="right">23.70</td>
+<td align="right">60.05</td>
+<td align="right">180.2</td>
+<td align="right">78.7</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">28</td>
+<td align="right">4.49</td>
+<td align="right">7.6</td>
+<td align="right">41.8</td>
+<td align="right">14.4</td>
+<td align="right">71</td>
+<td align="right">24.21</td>
+<td align="right">110.7</td>
+<td align="right">24.69</td>
+<td align="right">56.48</td>
+<td align="right">176.0</td>
+<td align="right">75.0</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">29</td>
+<td align="right">4.21</td>
+<td align="right">7.5</td>
+<td align="right">38.4</td>
+<td align="right">13.2</td>
+<td align="right">73</td>
+<td align="right">20.46</td>
+<td align="right">74.7</td>
+<td align="right">16.58</td>
+<td align="right">41.54</td>
+<td align="right">156.0</td>
+<td align="right">49.8</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">30</td>
+<td align="right">4.57</td>
+<td align="right">6.6</td>
+<td align="right">42.8</td>
+<td align="right">14.5</td>
+<td align="right">85</td>
+<td align="right">20.81</td>
+<td align="right">113.5</td>
+<td align="right">21.47</td>
+<td align="right">52.78</td>
+<td align="right">179.7</td>
+<td align="right">67.2</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">31</td>
+<td align="right">4.87</td>
+<td align="right">6.4</td>
+<td align="right">44.8</td>
+<td align="right">15.0</td>
+<td align="right">64</td>
+<td align="right">20.17</td>
+<td align="right">99.8</td>
+<td align="right">20.12</td>
+<td align="right">52.72</td>
+<td align="right">180.9</td>
+<td align="right">66.0</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">32</td>
+<td align="right">4.44</td>
+<td align="right">10.1</td>
+<td align="right">42.7</td>
+<td align="right">14.0</td>
+<td align="right">19</td>
+<td align="right">23.06</td>
+<td align="right">80.3</td>
+<td align="right">17.51</td>
+<td align="right">61.29</td>
+<td align="right">179.5</td>
+<td align="right">74.3</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">33</td>
+<td align="right">4.45</td>
+<td align="right">6.6</td>
+<td align="right">42.6</td>
+<td align="right">14.1</td>
+<td align="right">39</td>
+<td align="right">24.40</td>
+<td align="right">109.5</td>
+<td align="right">23.70</td>
+<td align="right">59.59</td>
+<td align="right">178.9</td>
+<td align="right">78.1</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">34</td>
+<td align="right">4.41</td>
+<td align="right">5.9</td>
+<td align="right">41.1</td>
+<td align="right">13.5</td>
+<td align="right">41</td>
+<td align="right">23.97</td>
+<td align="right">123.6</td>
+<td align="right">22.39</td>
+<td align="right">61.70</td>
+<td align="right">182.1</td>
+<td align="right">79.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="right">4.87</td>
+<td align="right">7.3</td>
+<td align="right">44.1</td>
+<td align="right">14.8</td>
+<td align="right">13</td>
+<td align="right">22.62</td>
+<td align="right">91.2</td>
+<td align="right">20.43</td>
+<td align="right">62.46</td>
+<td align="right">186.3</td>
+<td align="right">78.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">114</td>
+<td align="right">4.87</td>
+<td align="right">8.2</td>
+<td align="right">43.8</td>
+<td align="right">15.0</td>
+<td align="right">130</td>
+<td align="right">23.57</td>
+<td align="right">49.2</td>
+<td align="right">9.00</td>
+<td align="right">78.00</td>
+<td align="right">190.7</td>
+<td align="right">85.7</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">115</td>
+<td align="right">5.04</td>
+<td align="right">7.1</td>
+<td align="right">44.0</td>
+<td align="right">14.8</td>
+<td align="right">64</td>
+<td align="right">25.84</td>
+<td align="right">61.8</td>
+<td align="right">12.61</td>
+<td align="right">75.00</td>
+<td align="right">181.8</td>
+<td align="right">85.4</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">116</td>
+<td align="right">4.40</td>
+<td align="right">5.3</td>
+<td align="right">42.5</td>
+<td align="right">14.5</td>
+<td align="right">109</td>
+<td align="right">24.06</td>
+<td align="right">46.5</td>
+<td align="right">9.03</td>
+<td align="right">78.00</td>
+<td align="right">188.3</td>
+<td align="right">85.3</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">117</td>
+<td align="right">4.95</td>
+<td align="right">5.9</td>
+<td align="right">45.4</td>
+<td align="right">15.5</td>
+<td align="right">125</td>
+<td align="right">23.85</td>
+<td align="right">34.8</td>
+<td align="right">6.96</td>
+<td align="right">87.00</td>
+<td align="right">198.0</td>
+<td align="right">93.5</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">118</td>
+<td align="right">4.78</td>
+<td align="right">9.3</td>
+<td align="right">43.0</td>
+<td align="right">14.7</td>
+<td align="right">150</td>
+<td align="right">25.09</td>
+<td align="right">60.2</td>
+<td align="right">10.05</td>
+<td align="right">78.00</td>
+<td align="right">186.0</td>
+<td align="right">86.8</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">119</td>
+<td align="right">5.21</td>
+<td align="right">6.8</td>
+<td align="right">44.5</td>
+<td align="right">15.4</td>
+<td align="right">115</td>
+<td align="right">23.84</td>
+<td align="right">48.1</td>
+<td align="right">9.56</td>
+<td align="right">79.00</td>
+<td align="right">192.0</td>
+<td align="right">87.9</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">120</td>
+<td align="right">5.22</td>
+<td align="right">8.4</td>
+<td align="right">47.5</td>
+<td align="right">16.2</td>
+<td align="right">89</td>
+<td align="right">25.31</td>
+<td align="right">44.5</td>
+<td align="right">9.36</td>
+<td align="right">79.00</td>
+<td align="right">185.6</td>
+<td align="right">87.2</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">121</td>
+<td align="right">5.18</td>
+<td align="right">6.5</td>
+<td align="right">45.4</td>
+<td align="right">14.9</td>
+<td align="right">93</td>
+<td align="right">19.69</td>
+<td align="right">54.0</td>
+<td align="right">10.81</td>
+<td align="right">48.00</td>
+<td align="right">165.3</td>
+<td align="right">53.8</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">122</td>
+<td align="right">5.40</td>
+<td align="right">6.8</td>
+<td align="right">49.5</td>
+<td align="right">17.3</td>
+<td align="right">183</td>
+<td align="right">26.07</td>
+<td align="right">44.7</td>
+<td align="right">8.61</td>
+<td align="right">82.00</td>
+<td align="right">185.6</td>
+<td align="right">89.8</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">123</td>
+<td align="right">4.92</td>
+<td align="right">5.4</td>
+<td align="right">46.2</td>
+<td align="right">15.8</td>
+<td align="right">84</td>
+<td align="right">25.50</td>
+<td align="right">64.9</td>
+<td align="right">9.53</td>
+<td align="right">82.00</td>
+<td align="right">189.0</td>
+<td align="right">91.1</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">124</td>
+<td align="right">5.24</td>
+<td align="right">7.5</td>
+<td align="right">46.5</td>
+<td align="right">15.5</td>
+<td align="right">70</td>
+<td align="right">23.69</td>
+<td align="right">43.8</td>
+<td align="right">7.42</td>
+<td align="right">82.00</td>
+<td align="right">193.4</td>
+<td align="right">88.6</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">125</td>
+<td align="right">5.09</td>
+<td align="right">10.1</td>
+<td align="right">44.9</td>
+<td align="right">14.8</td>
+<td align="right">118</td>
+<td align="right">26.79</td>
+<td align="right">58.3</td>
+<td align="right">9.79</td>
+<td align="right">83.00</td>
+<td align="right">185.6</td>
+<td align="right">92.3</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">126</td>
+<td align="right">4.83</td>
+<td align="right">5.0</td>
+<td align="right">43.8</td>
+<td align="right">15.1</td>
+<td align="right">61</td>
+<td align="right">25.61</td>
+<td align="right">52.8</td>
+<td align="right">8.97</td>
+<td align="right">88.00</td>
+<td align="right">194.6</td>
+<td align="right">97.0</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">127</td>
+<td align="right">5.22</td>
+<td align="right">6.0</td>
+<td align="right">46.6</td>
+<td align="right">15.7</td>
+<td align="right">72</td>
+<td align="right">25.06</td>
+<td align="right">43.1</td>
+<td align="right">7.49</td>
+<td align="right">83.00</td>
+<td align="right">189.0</td>
+<td align="right">89.5</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">128</td>
+<td align="right">4.71</td>
+<td align="right">8.0</td>
+<td align="right">45.5</td>
+<td align="right">15.6</td>
+<td align="right">91</td>
+<td align="right">24.93</td>
+<td align="right">78.0</td>
+<td align="right">11.95</td>
+<td align="right">78.00</td>
+<td align="right">188.1</td>
+<td align="right">88.2</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(df,sport <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;Row&quot;</span>,<span class="st">&quot;Netball&quot;</span>,<span class="st">&quot;Tennis&quot;</span>))</span></code></pre></div>
+<div class="kable-table">
+<table>
+<colgroup>
+<col width="5%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="7%" />
+<col width="7%" />
+<col width="9%" />
+<col width="7%" />
+<col width="7%" />
+<col width="6%" />
+<col width="5%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">rcc</th>
+<th align="right">wcc</th>
+<th align="right">hc</th>
+<th align="right">hg</th>
+<th align="right">ferr</th>
+<th align="right">bmi</th>
+<th align="right">ssf</th>
+<th align="right">pcBfat</th>
+<th align="right">lbm</th>
+<th align="right">ht</th>
+<th align="right">wt</th>
+<th align="left">sex</th>
+<th align="left">sport</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">14</td>
+<td align="right">4.26</td>
+<td align="right">6.2</td>
+<td align="right">41.0</td>
+<td align="right">13.9</td>
+<td align="right">48</td>
+<td align="right">25.44</td>
+<td align="right">90.2</td>
+<td align="right">17.71</td>
+<td align="right">66.24</td>
+<td align="right">177.9</td>
+<td align="right">80.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">15</td>
+<td align="right">4.63</td>
+<td align="right">6.0</td>
+<td align="right">43.7</td>
+<td align="right">14.7</td>
+<td align="right">30</td>
+<td align="right">22.63</td>
+<td align="right">97.2</td>
+<td align="right">18.77</td>
+<td align="right">57.92</td>
+<td align="right">177.5</td>
+<td align="right">71.3</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">16</td>
+<td align="right">4.36</td>
+<td align="right">5.8</td>
+<td align="right">40.3</td>
+<td align="right">13.3</td>
+<td align="right">29</td>
+<td align="right">21.86</td>
+<td align="right">99.9</td>
+<td align="right">19.83</td>
+<td align="right">56.52</td>
+<td align="right">179.6</td>
+<td align="right">70.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">17</td>
+<td align="right">3.91</td>
+<td align="right">7.3</td>
+<td align="right">37.6</td>
+<td align="right">12.9</td>
+<td align="right">43</td>
+<td align="right">22.27</td>
+<td align="right">125.9</td>
+<td align="right">25.16</td>
+<td align="right">54.78</td>
+<td align="right">181.3</td>
+<td align="right">73.2</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">18</td>
+<td align="right">4.51</td>
+<td align="right">8.3</td>
+<td align="right">43.7</td>
+<td align="right">14.7</td>
+<td align="right">34</td>
+<td align="right">21.27</td>
+<td align="right">69.9</td>
+<td align="right">18.04</td>
+<td align="right">56.31</td>
+<td align="right">179.7</td>
+<td align="right">68.7</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">19</td>
+<td align="right">4.37</td>
+<td align="right">8.1</td>
+<td align="right">41.8</td>
+<td align="right">14.3</td>
+<td align="right">53</td>
+<td align="right">23.47</td>
+<td align="right">98.0</td>
+<td align="right">21.79</td>
+<td align="right">62.96</td>
+<td align="right">185.2</td>
+<td align="right">80.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">20</td>
+<td align="right">4.90</td>
+<td align="right">6.9</td>
+<td align="right">44.0</td>
+<td align="right">14.5</td>
+<td align="right">59</td>
+<td align="right">23.19</td>
+<td align="right">96.8</td>
+<td align="right">22.25</td>
+<td align="right">56.68</td>
+<td align="right">177.3</td>
+<td align="right">72.9</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">21</td>
+<td align="right">4.46</td>
+<td align="right">5.7</td>
+<td align="right">39.2</td>
+<td align="right">13.0</td>
+<td align="right">43</td>
+<td align="right">23.17</td>
+<td align="right">80.3</td>
+<td align="right">16.25</td>
+<td align="right">62.39</td>
+<td align="right">179.3</td>
+<td align="right">74.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">22</td>
+<td align="right">3.95</td>
+<td align="right">3.3</td>
+<td align="right">36.9</td>
+<td align="right">12.5</td>
+<td align="right">40</td>
+<td align="right">24.54</td>
+<td align="right">74.9</td>
+<td align="right">16.38</td>
+<td align="right">63.05</td>
+<td align="right">175.3</td>
+<td align="right">75.4</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">23</td>
+<td align="right">4.46</td>
+<td align="right">9.5</td>
+<td align="right">41.5</td>
+<td align="right">14.5</td>
+<td align="right">92</td>
+<td align="right">22.96</td>
+<td align="right">83.0</td>
+<td align="right">19.35</td>
+<td align="right">56.05</td>
+<td align="right">174.0</td>
+<td align="right">69.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">24</td>
+<td align="right">5.02</td>
+<td align="right">6.4</td>
+<td align="right">44.8</td>
+<td align="right">15.2</td>
+<td align="right">48</td>
+<td align="right">19.76</td>
+<td align="right">91.0</td>
+<td align="right">19.20</td>
+<td align="right">53.65</td>
+<td align="right">183.3</td>
+<td align="right">66.4</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">25</td>
+<td align="right">4.26</td>
+<td align="right">5.8</td>
+<td align="right">41.2</td>
+<td align="right">14.1</td>
+<td align="right">77</td>
+<td align="right">23.36</td>
+<td align="right">76.2</td>
+<td align="right">17.89</td>
+<td align="right">65.45</td>
+<td align="right">184.7</td>
+<td align="right">79.7</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">26</td>
+<td align="right">4.46</td>
+<td align="right">5.6</td>
+<td align="right">41.1</td>
+<td align="right">14.3</td>
+<td align="right">71</td>
+<td align="right">22.67</td>
+<td align="right">52.6</td>
+<td align="right">12.20</td>
+<td align="right">64.62</td>
+<td align="right">180.2</td>
+<td align="right">73.6</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">27</td>
+<td align="right">4.16</td>
+<td align="right">5.8</td>
+<td align="right">39.8</td>
+<td align="right">13.3</td>
+<td align="right">37</td>
+<td align="right">24.24</td>
+<td align="right">111.1</td>
+<td align="right">23.70</td>
+<td align="right">60.05</td>
+<td align="right">180.2</td>
+<td align="right">78.7</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">28</td>
+<td align="right">4.49</td>
+<td align="right">7.6</td>
+<td align="right">41.8</td>
+<td align="right">14.4</td>
+<td align="right">71</td>
+<td align="right">24.21</td>
+<td align="right">110.7</td>
+<td align="right">24.69</td>
+<td align="right">56.48</td>
+<td align="right">176.0</td>
+<td align="right">75.0</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">29</td>
+<td align="right">4.21</td>
+<td align="right">7.5</td>
+<td align="right">38.4</td>
+<td align="right">13.2</td>
+<td align="right">73</td>
+<td align="right">20.46</td>
+<td align="right">74.7</td>
+<td align="right">16.58</td>
+<td align="right">41.54</td>
+<td align="right">156.0</td>
+<td align="right">49.8</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">30</td>
+<td align="right">4.57</td>
+<td align="right">6.6</td>
+<td align="right">42.8</td>
+<td align="right">14.5</td>
+<td align="right">85</td>
+<td align="right">20.81</td>
+<td align="right">113.5</td>
+<td align="right">21.47</td>
+<td align="right">52.78</td>
+<td align="right">179.7</td>
+<td align="right">67.2</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">31</td>
+<td align="right">4.87</td>
+<td align="right">6.4</td>
+<td align="right">44.8</td>
+<td align="right">15.0</td>
+<td align="right">64</td>
+<td align="right">20.17</td>
+<td align="right">99.8</td>
+<td align="right">20.12</td>
+<td align="right">52.72</td>
+<td align="right">180.9</td>
+<td align="right">66.0</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">32</td>
+<td align="right">4.44</td>
+<td align="right">10.1</td>
+<td align="right">42.7</td>
+<td align="right">14.0</td>
+<td align="right">19</td>
+<td align="right">23.06</td>
+<td align="right">80.3</td>
+<td align="right">17.51</td>
+<td align="right">61.29</td>
+<td align="right">179.5</td>
+<td align="right">74.3</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">33</td>
+<td align="right">4.45</td>
+<td align="right">6.6</td>
+<td align="right">42.6</td>
+<td align="right">14.1</td>
+<td align="right">39</td>
+<td align="right">24.40</td>
+<td align="right">109.5</td>
+<td align="right">23.70</td>
+<td align="right">59.59</td>
+<td align="right">178.9</td>
+<td align="right">78.1</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">34</td>
+<td align="right">4.41</td>
+<td align="right">5.9</td>
+<td align="right">41.1</td>
+<td align="right">13.5</td>
+<td align="right">41</td>
+<td align="right">23.97</td>
+<td align="right">123.6</td>
+<td align="right">22.39</td>
+<td align="right">61.70</td>
+<td align="right">182.1</td>
+<td align="right">79.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="right">4.87</td>
+<td align="right">7.3</td>
+<td align="right">44.1</td>
+<td align="right">14.8</td>
+<td align="right">13</td>
+<td align="right">22.62</td>
+<td align="right">91.2</td>
+<td align="right">20.43</td>
+<td align="right">62.46</td>
+<td align="right">186.3</td>
+<td align="right">78.5</td>
+<td align="left">f</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">36</td>
+<td align="right">4.56</td>
+<td align="right">13.3</td>
+<td align="right">42.2</td>
+<td align="right">13.6</td>
+<td align="right">20</td>
+<td align="right">19.16</td>
+<td align="right">49.0</td>
+<td align="right">11.29</td>
+<td align="right">53.14</td>
+<td align="right">176.8</td>
+<td align="right">59.9</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">37</td>
+<td align="right">4.15</td>
+<td align="right">6.0</td>
+<td align="right">38.0</td>
+<td align="right">12.7</td>
+<td align="right">59</td>
+<td align="right">21.15</td>
+<td align="right">110.2</td>
+<td align="right">25.26</td>
+<td align="right">47.09</td>
+<td align="right">172.6</td>
+<td align="right">63.0</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">38</td>
+<td align="right">4.16</td>
+<td align="right">7.6</td>
+<td align="right">37.5</td>
+<td align="right">12.3</td>
+<td align="right">22</td>
+<td align="right">21.40</td>
+<td align="right">89.0</td>
+<td align="right">19.39</td>
+<td align="right">53.44</td>
+<td align="right">176.0</td>
+<td align="right">66.3</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">39</td>
+<td align="right">4.32</td>
+<td align="right">6.4</td>
+<td align="right">37.7</td>
+<td align="right">12.3</td>
+<td align="right">30</td>
+<td align="right">21.03</td>
+<td align="right">98.3</td>
+<td align="right">19.63</td>
+<td align="right">48.78</td>
+<td align="right">169.9</td>
+<td align="right">60.7</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">40</td>
+<td align="right">4.06</td>
+<td align="right">5.8</td>
+<td align="right">38.7</td>
+<td align="right">12.8</td>
+<td align="right">78</td>
+<td align="right">21.77</td>
+<td align="right">122.1</td>
+<td align="right">23.11</td>
+<td align="right">56.05</td>
+<td align="right">183.0</td>
+<td align="right">72.9</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">41</td>
+<td align="right">4.12</td>
+<td align="right">6.1</td>
+<td align="right">36.6</td>
+<td align="right">11.8</td>
+<td align="right">21</td>
+<td align="right">21.38</td>
+<td align="right">90.4</td>
+<td align="right">16.86</td>
+<td align="right">56.45</td>
+<td align="right">178.2</td>
+<td align="right">67.9</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">42</td>
+<td align="right">4.17</td>
+<td align="right">5.0</td>
+<td align="right">37.4</td>
+<td align="right">12.7</td>
+<td align="right">109</td>
+<td align="right">21.47</td>
+<td align="right">106.9</td>
+<td align="right">21.32</td>
+<td align="right">53.11</td>
+<td align="right">177.3</td>
+<td align="right">67.5</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">43</td>
+<td align="right">3.80</td>
+<td align="right">6.6</td>
+<td align="right">36.5</td>
+<td align="right">12.4</td>
+<td align="right">102</td>
+<td align="right">24.45</td>
+<td align="right">156.6</td>
+<td align="right">26.57</td>
+<td align="right">54.41</td>
+<td align="right">174.1</td>
+<td align="right">74.1</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">44</td>
+<td align="right">3.96</td>
+<td align="right">5.5</td>
+<td align="right">36.3</td>
+<td align="right">12.4</td>
+<td align="right">71</td>
+<td align="right">22.63</td>
+<td align="right">101.1</td>
+<td align="right">17.93</td>
+<td align="right">55.97</td>
+<td align="right">173.6</td>
+<td align="right">68.2</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">45</td>
+<td align="right">4.44</td>
+<td align="right">9.7</td>
+<td align="right">41.4</td>
+<td align="right">14.1</td>
+<td align="right">64</td>
+<td align="right">22.80</td>
+<td align="right">126.4</td>
+<td align="right">24.97</td>
+<td align="right">51.62</td>
+<td align="right">173.7</td>
+<td align="right">68.8</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">46</td>
+<td align="right">4.27</td>
+<td align="right">10.6</td>
+<td align="right">37.7</td>
+<td align="right">12.5</td>
+<td align="right">68</td>
+<td align="right">23.58</td>
+<td align="right">114.0</td>
+<td align="right">22.62</td>
+<td align="right">58.27</td>
+<td align="right">178.7</td>
+<td align="right">75.3</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">47</td>
+<td align="right">3.90</td>
+<td align="right">6.3</td>
+<td align="right">35.9</td>
+<td align="right">12.1</td>
+<td align="right">78</td>
+<td align="right">20.06</td>
+<td align="right">70.0</td>
+<td align="right">15.01</td>
+<td align="right">57.28</td>
+<td align="right">183.3</td>
+<td align="right">67.4</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">48</td>
+<td align="right">4.02</td>
+<td align="right">9.1</td>
+<td align="right">37.7</td>
+<td align="right">12.7</td>
+<td align="right">107</td>
+<td align="right">23.01</td>
+<td align="right">77.0</td>
+<td align="right">18.14</td>
+<td align="right">57.30</td>
+<td align="right">174.4</td>
+<td align="right">70.0</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">49</td>
+<td align="right">4.39</td>
+<td align="right">9.6</td>
+<td align="right">38.3</td>
+<td align="right">12.5</td>
+<td align="right">39</td>
+<td align="right">24.64</td>
+<td align="right">148.9</td>
+<td align="right">26.78</td>
+<td align="right">54.18</td>
+<td align="right">173.3</td>
+<td align="right">74.0</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">50</td>
+<td align="right">4.52</td>
+<td align="right">5.1</td>
+<td align="right">38.8</td>
+<td align="right">13.1</td>
+<td align="right">58</td>
+<td align="right">18.26</td>
+<td align="right">80.1</td>
+<td align="right">17.22</td>
+<td align="right">42.96</td>
+<td align="right">168.6</td>
+<td align="right">51.9</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">51</td>
+<td align="right">4.25</td>
+<td align="right">10.7</td>
+<td align="right">39.5</td>
+<td align="right">13.2</td>
+<td align="right">127</td>
+<td align="right">24.47</td>
+<td align="right">156.6</td>
+<td align="right">26.50</td>
+<td align="right">54.46</td>
+<td align="right">174.0</td>
+<td align="right">74.1</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">52</td>
+<td align="right">4.46</td>
+<td align="right">10.9</td>
+<td align="right">39.7</td>
+<td align="right">13.7</td>
+<td align="right">102</td>
+<td align="right">23.99</td>
+<td align="right">115.9</td>
+<td align="right">23.01</td>
+<td align="right">57.20</td>
+<td align="right">176.0</td>
+<td align="right">74.3</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">53</td>
+<td align="right">4.40</td>
+<td align="right">9.3</td>
+<td align="right">40.4</td>
+<td align="right">13.6</td>
+<td align="right">86</td>
+<td align="right">26.24</td>
+<td align="right">181.7</td>
+<td align="right">30.10</td>
+<td align="right">54.38</td>
+<td align="right">172.2</td>
+<td align="right">77.8</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">54</td>
+<td align="right">4.83</td>
+<td align="right">8.4</td>
+<td align="right">41.8</td>
+<td align="right">13.4</td>
+<td align="right">40</td>
+<td align="right">20.04</td>
+<td align="right">71.6</td>
+<td align="right">13.93</td>
+<td align="right">57.58</td>
+<td align="right">182.7</td>
+<td align="right">66.9</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">55</td>
+<td align="right">4.23</td>
+<td align="right">6.9</td>
+<td align="right">38.3</td>
+<td align="right">12.6</td>
+<td align="right">50</td>
+<td align="right">25.72</td>
+<td align="right">143.5</td>
+<td align="right">26.65</td>
+<td align="right">61.46</td>
+<td align="right">180.5</td>
+<td align="right">83.8</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">56</td>
+<td align="right">4.24</td>
+<td align="right">8.4</td>
+<td align="right">37.6</td>
+<td align="right">12.5</td>
+<td align="right">58</td>
+<td align="right">25.64</td>
+<td align="right">200.8</td>
+<td align="right">35.52</td>
+<td align="right">53.46</td>
+<td align="right">179.8</td>
+<td align="right">82.9</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">57</td>
+<td align="right">3.95</td>
+<td align="right">6.6</td>
+<td align="right">38.4</td>
+<td align="right">12.8</td>
+<td align="right">33</td>
+<td align="right">19.87</td>
+<td align="right">68.9</td>
+<td align="right">15.59</td>
+<td align="right">54.11</td>
+<td align="right">179.6</td>
+<td align="right">64.1</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="odd">
+<td align="left">58</td>
+<td align="right">4.03</td>
+<td align="right">8.5</td>
+<td align="right">37.7</td>
+<td align="right">13.0</td>
+<td align="right">51</td>
+<td align="right">23.35</td>
+<td align="right">103.6</td>
+<td align="right">19.61</td>
+<td align="right">55.35</td>
+<td align="right">171.7</td>
+<td align="right">68.8</td>
+<td align="left">f</td>
+<td align="left">Netball</td>
+</tr>
+<tr class="even">
+<td align="left">90</td>
+<td align="right">4.00</td>
+<td align="right">4.2</td>
+<td align="right">36.6</td>
+<td align="right">12.0</td>
+<td align="right">57</td>
+<td align="right">25.36</td>
+<td align="right">109.0</td>
+<td align="right">20.86</td>
+<td align="right">56.58</td>
+<td align="right">167.9</td>
+<td align="right">71.5</td>
+<td align="left">f</td>
+<td align="left">Tennis</td>
+</tr>
+<tr class="odd">
+<td align="left">91</td>
+<td align="right">4.40</td>
+<td align="right">4.0</td>
+<td align="right">40.8</td>
+<td align="right">13.9</td>
+<td align="right">73</td>
+<td align="right">22.12</td>
+<td align="right">98.1</td>
+<td align="right">19.64</td>
+<td align="right">56.01</td>
+<td align="right">177.5</td>
+<td align="right">69.7</td>
+<td align="left">f</td>
+<td align="left">Tennis</td>
+</tr>
+<tr class="even">
+<td align="left">92</td>
+<td align="right">4.38</td>
+<td align="right">7.9</td>
+<td align="right">39.8</td>
+<td align="right">13.5</td>
+<td align="right">88</td>
+<td align="right">21.25</td>
+<td align="right">80.6</td>
+<td align="right">17.07</td>
+<td align="right">46.52</td>
+<td align="right">162.5</td>
+<td align="right">56.1</td>
+<td align="left">f</td>
+<td align="left">Tennis</td>
+</tr>
+<tr class="odd">
+<td align="left">93</td>
+<td align="right">4.08</td>
+<td align="right">6.6</td>
+<td align="right">37.8</td>
+<td align="right">12.1</td>
+<td align="right">182</td>
+<td align="right">20.53</td>
+<td align="right">68.3</td>
+<td align="right">15.31</td>
+<td align="right">51.75</td>
+<td align="right">172.5</td>
+<td align="right">61.1</td>
+<td align="left">f</td>
+<td align="left">Tennis</td>
+</tr>
+<tr class="even">
+<td align="left">94</td>
+<td align="right">4.98</td>
+<td align="right">6.4</td>
+<td align="right">44.8</td>
+<td align="right">14.8</td>
+<td align="right">80</td>
+<td align="right">17.06</td>
+<td align="right">47.6</td>
+<td align="right">11.07</td>
+<td align="right">42.15</td>
+<td align="right">166.7</td>
+<td align="right">47.4</td>
+<td align="left">f</td>
+<td align="left">Tennis</td>
+</tr>
+<tr class="odd">
+<td align="left">95</td>
+<td align="right">5.16</td>
+<td align="right">7.2</td>
+<td align="right">44.3</td>
+<td align="right">14.5</td>
+<td align="right">88</td>
+<td align="right">18.29</td>
+<td align="right">61.9</td>
+<td align="right">12.92</td>
+<td align="right">48.76</td>
+<td align="right">175.0</td>
+<td align="right">56.0</td>
+<td align="left">f</td>
+<td align="left">Tennis</td>
+</tr>
+<tr class="even">
+<td align="left">96</td>
+<td align="right">4.66</td>
+<td align="right">6.4</td>
+<td align="right">40.9</td>
+<td align="right">13.9</td>
+<td align="right">109</td>
+<td align="right">18.37</td>
+<td align="right">38.2</td>
+<td align="right">8.45</td>
+<td align="right">41.93</td>
+<td align="right">157.9</td>
+<td align="right">45.8</td>
+<td align="left">f</td>
+<td align="left">Tennis</td>
+</tr>
+<tr class="odd">
+<td align="left">114</td>
+<td align="right">4.87</td>
+<td align="right">8.2</td>
+<td align="right">43.8</td>
+<td align="right">15.0</td>
+<td align="right">130</td>
+<td align="right">23.57</td>
+<td align="right">49.2</td>
+<td align="right">9.00</td>
+<td align="right">78.00</td>
+<td align="right">190.7</td>
+<td align="right">85.7</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">115</td>
+<td align="right">5.04</td>
+<td align="right">7.1</td>
+<td align="right">44.0</td>
+<td align="right">14.8</td>
+<td align="right">64</td>
+<td align="right">25.84</td>
+<td align="right">61.8</td>
+<td align="right">12.61</td>
+<td align="right">75.00</td>
+<td align="right">181.8</td>
+<td align="right">85.4</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">116</td>
+<td align="right">4.40</td>
+<td align="right">5.3</td>
+<td align="right">42.5</td>
+<td align="right">14.5</td>
+<td align="right">109</td>
+<td align="right">24.06</td>
+<td align="right">46.5</td>
+<td align="right">9.03</td>
+<td align="right">78.00</td>
+<td align="right">188.3</td>
+<td align="right">85.3</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">117</td>
+<td align="right">4.95</td>
+<td align="right">5.9</td>
+<td align="right">45.4</td>
+<td align="right">15.5</td>
+<td align="right">125</td>
+<td align="right">23.85</td>
+<td align="right">34.8</td>
+<td align="right">6.96</td>
+<td align="right">87.00</td>
+<td align="right">198.0</td>
+<td align="right">93.5</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">118</td>
+<td align="right">4.78</td>
+<td align="right">9.3</td>
+<td align="right">43.0</td>
+<td align="right">14.7</td>
+<td align="right">150</td>
+<td align="right">25.09</td>
+<td align="right">60.2</td>
+<td align="right">10.05</td>
+<td align="right">78.00</td>
+<td align="right">186.0</td>
+<td align="right">86.8</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">119</td>
+<td align="right">5.21</td>
+<td align="right">6.8</td>
+<td align="right">44.5</td>
+<td align="right">15.4</td>
+<td align="right">115</td>
+<td align="right">23.84</td>
+<td align="right">48.1</td>
+<td align="right">9.56</td>
+<td align="right">79.00</td>
+<td align="right">192.0</td>
+<td align="right">87.9</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">120</td>
+<td align="right">5.22</td>
+<td align="right">8.4</td>
+<td align="right">47.5</td>
+<td align="right">16.2</td>
+<td align="right">89</td>
+<td align="right">25.31</td>
+<td align="right">44.5</td>
+<td align="right">9.36</td>
+<td align="right">79.00</td>
+<td align="right">185.6</td>
+<td align="right">87.2</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">121</td>
+<td align="right">5.18</td>
+<td align="right">6.5</td>
+<td align="right">45.4</td>
+<td align="right">14.9</td>
+<td align="right">93</td>
+<td align="right">19.69</td>
+<td align="right">54.0</td>
+<td align="right">10.81</td>
+<td align="right">48.00</td>
+<td align="right">165.3</td>
+<td align="right">53.8</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">122</td>
+<td align="right">5.40</td>
+<td align="right">6.8</td>
+<td align="right">49.5</td>
+<td align="right">17.3</td>
+<td align="right">183</td>
+<td align="right">26.07</td>
+<td align="right">44.7</td>
+<td align="right">8.61</td>
+<td align="right">82.00</td>
+<td align="right">185.6</td>
+<td align="right">89.8</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">123</td>
+<td align="right">4.92</td>
+<td align="right">5.4</td>
+<td align="right">46.2</td>
+<td align="right">15.8</td>
+<td align="right">84</td>
+<td align="right">25.50</td>
+<td align="right">64.9</td>
+<td align="right">9.53</td>
+<td align="right">82.00</td>
+<td align="right">189.0</td>
+<td align="right">91.1</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">124</td>
+<td align="right">5.24</td>
+<td align="right">7.5</td>
+<td align="right">46.5</td>
+<td align="right">15.5</td>
+<td align="right">70</td>
+<td align="right">23.69</td>
+<td align="right">43.8</td>
+<td align="right">7.42</td>
+<td align="right">82.00</td>
+<td align="right">193.4</td>
+<td align="right">88.6</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">125</td>
+<td align="right">5.09</td>
+<td align="right">10.1</td>
+<td align="right">44.9</td>
+<td align="right">14.8</td>
+<td align="right">118</td>
+<td align="right">26.79</td>
+<td align="right">58.3</td>
+<td align="right">9.79</td>
+<td align="right">83.00</td>
+<td align="right">185.6</td>
+<td align="right">92.3</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">126</td>
+<td align="right">4.83</td>
+<td align="right">5.0</td>
+<td align="right">43.8</td>
+<td align="right">15.1</td>
+<td align="right">61</td>
+<td align="right">25.61</td>
+<td align="right">52.8</td>
+<td align="right">8.97</td>
+<td align="right">88.00</td>
+<td align="right">194.6</td>
+<td align="right">97.0</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">127</td>
+<td align="right">5.22</td>
+<td align="right">6.0</td>
+<td align="right">46.6</td>
+<td align="right">15.7</td>
+<td align="right">72</td>
+<td align="right">25.06</td>
+<td align="right">43.1</td>
+<td align="right">7.49</td>
+<td align="right">83.00</td>
+<td align="right">189.0</td>
+<td align="right">89.5</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="odd">
+<td align="left">128</td>
+<td align="right">4.71</td>
+<td align="right">8.0</td>
+<td align="right">45.5</td>
+<td align="right">15.6</td>
+<td align="right">91</td>
+<td align="right">24.93</td>
+<td align="right">78.0</td>
+<td align="right">11.95</td>
+<td align="right">78.00</td>
+<td align="right">188.1</td>
+<td align="right">88.2</td>
+<td align="left">m</td>
+<td align="left">Row</td>
+</tr>
+<tr class="even">
+<td align="left">199</td>
+<td align="right">5.66</td>
+<td align="right">8.3</td>
+<td align="right">50.2</td>
+<td align="right">17.7</td>
+<td align="right">38</td>
+<td align="right">23.76</td>
+<td align="right">56.5</td>
+<td align="right">10.05</td>
+<td align="right">72.00</td>
+<td align="right">183.5</td>
+<td align="right">80.0</td>
+<td align="left">m</td>
+<td align="left">Tennis</td>
+</tr>
+<tr class="odd">
+<td align="left">200</td>
+<td align="right">5.03</td>
+<td align="right">6.4</td>
+<td align="right">42.7</td>
+<td align="right">14.3</td>
+<td align="right">122</td>
+<td align="right">22.01</td>
+<td align="right">47.6</td>
+<td align="right">8.51</td>
+<td align="right">68.00</td>
+<td align="right">183.1</td>
+<td align="right">73.8</td>
+<td align="left">m</td>
+<td align="left">Tennis</td>
+</tr>
+<tr class="even">
+<td align="left">201</td>
+<td align="right">4.97</td>
+<td align="right">8.8</td>
+<td align="right">43.0</td>
+<td align="right">14.9</td>
+<td align="right">233</td>
+<td align="right">22.34</td>
+<td align="right">60.4</td>
+<td align="right">11.50</td>
+<td align="right">63.00</td>
+<td align="right">178.4</td>
+<td align="right">71.1</td>
+<td align="left">m</td>
+<td align="left">Tennis</td>
+</tr>
+<tr class="odd">
+<td align="left">202</td>
+<td align="right">5.38</td>
+<td align="right">6.3</td>
+<td align="right">46.0</td>
+<td align="right">15.7</td>
+<td align="right">32</td>
+<td align="right">21.07</td>
+<td align="right">34.9</td>
+<td align="right">6.26</td>
+<td align="right">72.00</td>
+<td align="right">190.8</td>
+<td align="right">76.7</td>
+<td align="left">m</td>
+<td align="left">Tennis</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(df,sport<span class="sc">==</span><span class="st">&quot;B_Ball&quot;</span> <span class="sc">&amp;</span> sex<span class="sc">==</span><span class="st">&quot;f&quot;</span>)</span></code></pre></div>
+<div class="kable-table">
+<table>
+<colgroup>
+<col width="7%" />
+<col width="5%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="7%" />
+<col width="5%" />
+<col width="9%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">rcc</th>
+<th align="right">wcc</th>
+<th align="right">hc</th>
+<th align="right">hg</th>
+<th align="right">ferr</th>
+<th align="right">bmi</th>
+<th align="right">ssf</th>
+<th align="right">pcBfat</th>
+<th align="right">lbm</th>
+<th align="right">ht</th>
+<th align="right">wt</th>
+<th align="left">sex</th>
+<th align="left">sport</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">3.96</td>
+<td align="right">7.5</td>
+<td align="right">37.5</td>
+<td align="right">12.3</td>
+<td align="right">60</td>
+<td align="right">20.56</td>
+<td align="right">109.1</td>
+<td align="right">19.75</td>
+<td align="right">63.32</td>
+<td align="right">195.9</td>
+<td align="right">78.9</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="even">
+<td align="right">4.41</td>
+<td align="right">8.3</td>
+<td align="right">38.2</td>
+<td align="right">12.7</td>
+<td align="right">68</td>
+<td align="right">20.67</td>
+<td align="right">102.8</td>
+<td align="right">21.30</td>
+<td align="right">58.55</td>
+<td align="right">189.7</td>
+<td align="right">74.4</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="odd">
+<td align="right">4.14</td>
+<td align="right">5.0</td>
+<td align="right">36.4</td>
+<td align="right">11.6</td>
+<td align="right">21</td>
+<td align="right">21.86</td>
+<td align="right">104.6</td>
+<td align="right">19.88</td>
+<td align="right">55.36</td>
+<td align="right">177.8</td>
+<td align="right">69.1</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="even">
+<td align="right">4.11</td>
+<td align="right">5.3</td>
+<td align="right">37.3</td>
+<td align="right">12.6</td>
+<td align="right">69</td>
+<td align="right">21.88</td>
+<td align="right">126.4</td>
+<td align="right">23.66</td>
+<td align="right">57.18</td>
+<td align="right">185.0</td>
+<td align="right">74.9</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="odd">
+<td align="right">4.45</td>
+<td align="right">6.8</td>
+<td align="right">41.5</td>
+<td align="right">14.0</td>
+<td align="right">29</td>
+<td align="right">18.96</td>
+<td align="right">80.3</td>
+<td align="right">17.64</td>
+<td align="right">53.20</td>
+<td align="right">184.6</td>
+<td align="right">64.6</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="even">
+<td align="right">4.10</td>
+<td align="right">4.4</td>
+<td align="right">37.4</td>
+<td align="right">12.5</td>
+<td align="right">42</td>
+<td align="right">21.04</td>
+<td align="right">75.2</td>
+<td align="right">15.58</td>
+<td align="right">53.77</td>
+<td align="right">174.0</td>
+<td align="right">63.7</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="odd">
+<td align="right">4.31</td>
+<td align="right">5.3</td>
+<td align="right">39.6</td>
+<td align="right">12.8</td>
+<td align="right">73</td>
+<td align="right">21.69</td>
+<td align="right">87.2</td>
+<td align="right">19.99</td>
+<td align="right">60.17</td>
+<td align="right">186.2</td>
+<td align="right">75.2</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="even">
+<td align="right">4.42</td>
+<td align="right">5.7</td>
+<td align="right">39.9</td>
+<td align="right">13.2</td>
+<td align="right">44</td>
+<td align="right">20.62</td>
+<td align="right">97.9</td>
+<td align="right">22.43</td>
+<td align="right">48.33</td>
+<td align="right">173.8</td>
+<td align="right">62.3</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="odd">
+<td align="right">4.30</td>
+<td align="right">8.9</td>
+<td align="right">41.1</td>
+<td align="right">13.5</td>
+<td align="right">41</td>
+<td align="right">22.64</td>
+<td align="right">75.1</td>
+<td align="right">17.95</td>
+<td align="right">54.57</td>
+<td align="right">171.4</td>
+<td align="right">66.5</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="even">
+<td align="right">4.51</td>
+<td align="right">4.4</td>
+<td align="right">41.6</td>
+<td align="right">12.7</td>
+<td align="right">44</td>
+<td align="right">19.44</td>
+<td align="right">65.1</td>
+<td align="right">15.07</td>
+<td align="right">53.42</td>
+<td align="right">179.9</td>
+<td align="right">62.9</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="odd">
+<td align="right">4.71</td>
+<td align="right">5.3</td>
+<td align="right">41.4</td>
+<td align="right">14.0</td>
+<td align="right">38</td>
+<td align="right">25.75</td>
+<td align="right">171.1</td>
+<td align="right">28.83</td>
+<td align="right">68.53</td>
+<td align="right">193.4</td>
+<td align="right">96.3</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="even">
+<td align="right">4.62</td>
+<td align="right">7.3</td>
+<td align="right">43.8</td>
+<td align="right">14.7</td>
+<td align="right">26</td>
+<td align="right">21.20</td>
+<td align="right">76.8</td>
+<td align="right">18.08</td>
+<td align="right">61.85</td>
+<td align="right">188.7</td>
+<td align="right">75.5</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+<tr class="odd">
+<td align="right">4.35</td>
+<td align="right">7.8</td>
+<td align="right">41.4</td>
+<td align="right">14.1</td>
+<td align="right">30</td>
+<td align="right">22.03</td>
+<td align="right">117.8</td>
+<td align="right">23.30</td>
+<td align="right">48.32</td>
+<td align="right">169.1</td>
+<td align="right">63.0</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ol start="5" style="list-style-type: decimal">
+<li>Using the ais (DAAG) dataframe do the following:</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>recode wt column into a new categorical column such that there are
+equal (or almost equal) number of data in 10 equal sized intervals, name
+the intervals using a,b,c,…,etc. For example the result of applying the
+table function to the new column would given something as below: a b c d
+e f g h i j 20 20 21 19 22 18 21 19 21 20 (Hint: use a combination of
+quantile and cut functions. Use quantile function to derive the
+breakpoints and then apply it to the cut function with appropriate
+labels to derive the new column)</li>
+<li>create a new column with values given by the following condition:
+bmi more than 22.96 and lbm more than or equal to 63 and sport is NOT
+any of the following: B_Ball, Field, Gym then then the new column value
+is A otherwise B (Hint: check the use of %in% operator or match function
+and their inverse using ! operator)
+<ol style="list-style-type: lower-roman">
+<li>do the part (b) using mapply and named functions</li>
+<li>do the part (b) w/o using mapply</li>
+</ol></li>
+</ol>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DAAG)</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> ais</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(df<span class="sc">$</span>wt)</span></code></pre></div>
+<pre><code>##      0%     25%     50%     75%    100% 
+##  37.800  66.525  74.400  84.125 123.200</code></pre>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>tab_breaks <span class="ot">&lt;-</span> <span class="fu">with</span>(df, <span class="fu">seq</span>(<span class="fl">37.80</span>,<span class="fl">123.20</span>,(<span class="fl">123.2-37.8</span>)<span class="sc">/</span><span class="dv">10</span>))</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>factor_wt <span class="ot">&lt;-</span> <span class="fu">with</span>(df, <span class="fu">cut</span>(wt,tab_breaks,<span class="at">labels=</span>LETTERS[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>],<span class="at">include.lowest=</span><span class="cn">TRUE</span>))</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code></pre></div>
+<div class="kable-table">
+<table style="width:100%;">
+<colgroup>
+<col width="6%" />
+<col width="4%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="7%" />
+<col width="7%" />
+<col width="8%" />
+<col width="7%" />
+<col width="7%" />
+<col width="6%" />
+<col width="4%" />
+<col width="8%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">rcc</th>
+<th align="right">wcc</th>
+<th align="right">hc</th>
+<th align="right">hg</th>
+<th align="right">ferr</th>
+<th align="right">bmi</th>
+<th align="right">ssf</th>
+<th align="right">pcBfat</th>
+<th align="right">lbm</th>
+<th align="right">ht</th>
+<th align="right">wt</th>
+<th align="left">sex</th>
+<th align="left">sport</th>
+<th align="left">factor_wt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">3.96</td>
+<td align="right">7.5</td>
+<td align="right">37.5</td>
+<td align="right">12.3</td>
+<td align="right">60</td>
+<td align="right">20.56</td>
+<td align="right">109.1</td>
+<td align="right">19.75</td>
+<td align="right">63.32</td>
+<td align="right">195.9</td>
+<td align="right">78.9</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+<td align="left">E</td>
+</tr>
+<tr class="even">
+<td align="right">4.41</td>
+<td align="right">8.3</td>
+<td align="right">38.2</td>
+<td align="right">12.7</td>
+<td align="right">68</td>
+<td align="right">20.67</td>
+<td align="right">102.8</td>
+<td align="right">21.30</td>
+<td align="right">58.55</td>
+<td align="right">189.7</td>
+<td align="right">74.4</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+<td align="left">E</td>
+</tr>
+<tr class="odd">
+<td align="right">4.14</td>
+<td align="right">5.0</td>
+<td align="right">36.4</td>
+<td align="right">11.6</td>
+<td align="right">21</td>
+<td align="right">21.86</td>
+<td align="right">104.6</td>
+<td align="right">19.88</td>
+<td align="right">55.36</td>
+<td align="right">177.8</td>
+<td align="right">69.1</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+<td align="left">D</td>
+</tr>
+<tr class="even">
+<td align="right">4.11</td>
+<td align="right">5.3</td>
+<td align="right">37.3</td>
+<td align="right">12.6</td>
+<td align="right">69</td>
+<td align="right">21.88</td>
+<td align="right">126.4</td>
+<td align="right">23.66</td>
+<td align="right">57.18</td>
+<td align="right">185.0</td>
+<td align="right">74.9</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+<td align="left">E</td>
+</tr>
+<tr class="odd">
+<td align="right">4.45</td>
+<td align="right">6.8</td>
+<td align="right">41.5</td>
+<td align="right">14.0</td>
+<td align="right">29</td>
+<td align="right">18.96</td>
+<td align="right">80.3</td>
+<td align="right">17.64</td>
+<td align="right">53.20</td>
+<td align="right">184.6</td>
+<td align="right">64.6</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+<td align="left">D</td>
+</tr>
+<tr class="even">
+<td align="right">4.10</td>
+<td align="right">4.4</td>
+<td align="right">37.4</td>
+<td align="right">12.5</td>
+<td align="right">42</td>
+<td align="right">21.04</td>
+<td align="right">75.2</td>
+<td align="right">15.58</td>
+<td align="right">53.77</td>
+<td align="right">174.0</td>
+<td align="right">63.7</td>
+<td align="left">f</td>
+<td align="left">B_Ball</td>
+<td align="left">D</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ol start="6" style="list-style-type: decimal">
+<li>Using the dataframe ais (DAAG) create a new column using the sport
+column so that the “_” in the names is removed, i.e. B_Ball becomes
+BBall, etc. (Hint: the sport column is a factor column and not a
+character column; use combination of strsplit, unlist and paste function
+if required or any other method of your choice)</li>
+</ol>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DAAG)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> ais</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">levels</span>(df<span class="sc">$</span>sport);y</span></code></pre></div>
+<pre><code>##  [1] &quot;B_Ball&quot;  &quot;Field&quot;   &quot;Gym&quot;     &quot;Netball&quot; &quot;Row&quot;     &quot;Swim&quot;    &quot;T_400m&quot; 
+##  [8] &quot;T_Sprnt&quot; &quot;Tennis&quot;  &quot;W_Polo&quot;</code></pre>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>y[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">10</span>)]<span class="ot">=</span><span class="fu">c</span>(<span class="st">&quot;BBall&quot;</span>,<span class="st">&quot;T400m&quot;</span>,<span class="st">&quot;TSprnt&quot;</span>,<span class="st">&quot;WPolo&quot;</span>)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(df<span class="sc">$</span>sport) <span class="ot">&lt;-</span> y</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(df<span class="sc">$</span>sport)</span></code></pre></div>
+<pre><code>##  [1] &quot;BBall&quot;   &quot;Field&quot;   &quot;Gym&quot;     &quot;Netball&quot; &quot;Row&quot;     &quot;Swim&quot;    &quot;T400m&quot;  
+##  [8] &quot;TSprnt&quot;  &quot;Tennis&quot;  &quot;WPolo&quot;</code></pre>
 <div id="session-info" class="section level3" number="2.0.1">
 <h3><span class="header-section-number">2.0.1</span> Session Info</h3>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div>
 <pre><code>## R version 4.2.1 (2022-06-23 ucrt)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 10 x64 (build 22000)
@@ -646,20 +3075,24 @@ the data frame rainforest (DAAG) Hint: use complete.cases</li>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] DAAG_1.25.4
+## [1] MASS_7.3-58.1 dplyr_1.0.10  DAAG_1.25.4  
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.9          knitr_1.40          magrittr_2.0.3     
-##  [4] lattice_0.20-45     R6_2.5.1            jpeg_0.1-9         
-##  [7] rlang_1.0.4         fastmap_1.1.0       interp_1.1-3       
-## [10] stringr_1.4.1       highr_0.9           rbibutils_2.2.9    
-## [13] tools_4.2.1         grid_4.2.1          xfun_0.32          
-## [16] png_0.1-7           latticeExtra_0.6-30 cli_3.3.0          
-## [19] deldir_1.0-6        jquerylib_0.1.4     htmltools_0.5.3    
-## [22] yaml_2.3.5          digest_0.6.29       RColorBrewer_1.1-3 
-## [25] Rdpack_2.4          sass_0.4.2          cachem_1.0.6       
-## [28] evaluate_0.16       rmarkdown_2.16      stringi_1.7.8      
-## [31] compiler_4.2.1      bslib_0.4.0         jsonlite_1.8.0</code></pre>
+##  [1] Rcpp_1.0.9          bslib_0.4.0         compiler_4.2.1     
+##  [4] pillar_1.8.1        RColorBrewer_1.1-3  jquerylib_0.1.4    
+##  [7] highr_0.9           tools_4.2.1         digest_0.6.29      
+## [10] tibble_3.1.8        jsonlite_1.8.0      evaluate_0.16      
+## [13] lifecycle_1.0.1     lattice_0.20-45     pkgconfig_2.0.3    
+## [16] png_0.1-7           rlang_1.0.4         cli_3.3.0          
+## [19] yaml_2.3.5          xfun_0.32           interp_1.1-3       
+## [22] fastmap_1.1.0       stringr_1.4.1       knitr_1.40         
+## [25] generics_0.1.3      sass_0.4.2          vctrs_0.4.1        
+## [28] tidyselect_1.1.2    grid_4.2.1          glue_1.6.2         
+## [31] R6_2.5.1            jpeg_0.1-9          fansi_1.0.3        
+## [34] Rdpack_2.4          rmarkdown_2.16      latticeExtra_0.6-30
+## [37] purrr_0.3.4         deldir_1.0-6        magrittr_2.0.3     
+## [40] htmltools_0.5.3     rbibutils_2.2.9     utf8_1.2.2         
+## [43] stringi_1.7.8       cachem_1.0.6</code></pre>
 </div>
 </div>
 

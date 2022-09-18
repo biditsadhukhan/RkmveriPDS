@@ -76,10 +76,103 @@ mapply('-',v1,v2)
 ```{r}
 library(DAAG)
 df3 <- rainforest
-with(df3,table(complete.cases(root),species))
+library(dplyr)
+with(df3,aggregate(root ~ species,df3,function(root){sum(is.na(root))},na.action = NULL))
 
 ```
+
+2. For each column of the data frame Pima.tr2 (MASS ), determine the number of missing values, broken down by type.
+(a) with sapply, and subset command. 
+(b) with by
+(c) with group by 
+(d) with aggregate
+
+```{r}
+library(MASS)
+df4 <-  Pima.tr2
+search()   # to see the order of package as there was a statement in R attaching hill from DAAG package
+f4 <- function(x)
+{
+  sum(is.na(x))
+}
+#a)
+for (lev in levels(df4$type)) {
+  print(sapply(subset(df4,type==lev),f4))
+}
+
+#b)
+with(df4,by(df4,type,function(x){sapply(x,f4)}))
+
+#c)library(dplyr)
+df4 %>%
+  group_by(type) %>%
+  summarise(missing_npreg=f4(npreg),
+            missing_glu=f4(glu),
+            missing_bp=f4(bp),
+            missing_skin=f4(skin),
+            missing_bmi = f4(bmi),
+            missing_ped = f4(ped),
+            missing_age = f4(age)
+            )
+
+#d)
+with(df4,aggregate(df4,by=list(type),f4))
+```
+3. In the data frame rainforest (package - DAAG), use table(rainforest$species) to check the names and numbers of each species that are present in the data.
+```{r}
+df3 <- rainforest
+table(rainforest$species)
+```
+
+4. Extract the following subsets from the data frame ais (DAAG): 
+(a) data for the rowers
+(b) data for the rowers, the netballers and the tennis players 
+(c) data for the female basketabllers and rowers
+
+```{r}
+library(DAAG)
+df <- ais
+subset(df,sport == "Row")
+subset(df,sport %in% c("Row","Netball","Tennis"))
+subset(df,sport=="B_Ball" & sex=="f")
+```
+
+5. Using the ais (DAAG) dataframe do the following:
+(a) recode wt column into a new categorical column such that there are equal (or almost equal) number of data in 10 equal sized intervals, name the intervals using a,b,c,...,etc. For example the result of applying the table function to the new column would given something as below:
+ a  b  c  d  e  f  g  h  i  j 
+20 20 21 19 22 18 21 19 21 20
+(Hint: use a combination of quantile and cut functions. Use quantile function to derive the breakpoints and then apply it to the cut function with appropriate labels to derive the new column)
+(b) create a new column with values given by the following condition:
+bmi more than 22.96 and lbm more than or equal to 63 and sport is NOT any of the following: B_Ball, Field, Gym then then the new column value is A otherwise B
+(Hint: check the use of %in% operator or match function and their inverse using ! operator)
+      (i) do the part (b) using mapply and named functions
+      (ii) do the part (b) w/o using mapply
+      
+```{r}
+library(DAAG)
+df <- ais
+quantile(df$wt)
+tab_breaks <- with(df, seq(37.80,123.20,(123.2-37.8)/10))
+
+df$factor_wt <- with(df, cut(wt,tab_breaks,labels=LETTERS[1:10],include.lowest=TRUE))
+head(df)
+```
+
+6. Using the dataframe ais (DAAG) create a new column using the sport column so that the "_" in the names is removed, i.e. B_Ball becomes BBall, etc. 
+(Hint: the sport column is a factor column and not a character column; use combination of strsplit, unlist and paste function if required or any other method of your choice)
+
+```{r}
+library(DAAG)
+df <- ais
+y <- levels(df$sport);y
+y[c(1,7,8,10)]=c("BBall","T400m","TSprnt","WPolo")
+levels(df$sport) <- y
+levels(df$sport)
+```
+
+
 ### Session Info
 ```{r}
 sessionInfo()
 ```
+
