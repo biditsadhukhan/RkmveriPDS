@@ -1,0 +1,253 @@
+---
+title: "Assignment-3"
+author: "Bidit Sadhukhan"
+date: '`r Sys.Date()`'
+output: 
+  html_document: 
+    toc: yes
+    number_sections: yes
+    theme: readable
+    highlight: zenburn
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+1.  Find the number of rows having NA month-wise in the airquality
+    dataframe using (i) by (ii) aggregate (iii) table (iv) dplyr.
+
+```{r}
+dat=airquality
+ head(dat)
+ f4 <- function(x)
+ {
+   sum(is.na(x))
+ }
+#i)
+ with(dat,by(dat,Month,function(x){sapply(x,f4)})) 
+#ii)
+    
+ aggregate(dat,by=list(dat$Month),f4)
+#iii)
+ with(dat,table(complete.cases(dat),Month))
+#iv)
+ library(dplyr)
+airquality %>%
+  group_by(Month) %>%
+  summarise_all(f4)
+```
+
+2.  Recode Temp variable: create a new col with values of Temp into
+    various categories such as Extreme, High, Medium, Low depending upon
+    Temp value using (i) dplyr and ifelse (ii) dplyr and a custom
+    function (hint:use sapply to call the function) (iii) cut function
+    (iv) simple indexing of rows by conditions (use of index vector
+    mechanism) (v) replace function. Verify if the results match using
+    table function.
+
+```{r}
+#i)
+dat = dat %>%
+  mutate(Temp_new=ifelse(Temp>quantile(Temp,.75),"Extreme",ifelse(Temp>quantile(Temp,.5),"High",ifelse(Temp>quantile(Temp,.25),"Medium","Low"))),.after=Temp) 
+
+head(dat)
+  
+#ii)
+f1 <- function(x){
+  
+}
+table(sapply(dat$Temp,f1))
+dat$Temp
+#iii)
+brks <- quantile(dat$Temp,probs = seq(0,1,0.25)); brks
+dat$Temp_new2<- cut(dat$Temp,breaks = brks, labels = c("Low","Medium","High","Extreme"),include.lowest = T)
+head(dat)
+
+#iv)
+ #dat$Temp[which(dat$temp_3>quantile(dat$Temp,0.75))]
+ 
+# dat[dat$temp_3 > quantile(dat$temp_3,0.75),]="Extreme"
+ #dat$Temp
+
+#v)
+dat$Temp_lvl3=replace(dat$Temp,dat$Temp>quantile(dat$Temp,.75),"Extreme")
+
+dat$Temp_lvl3=replace(dat$Temp_lvl3,dat$Temp>quantile(dat$Temp,.5)&dat$Temp<=quantile(dat$Temp,.75),"High")
+
+dat$Temp_lvl3=replace(dat$Temp_lvl3,dat$Temp>quantile(dat$Temp,.25)&dat$Temp<=quantile(dat$Temp,.5),"Medium")
+
+dat$Temp_lvl3=replace(dat$Temp_lvl3,dat$Temp<=quantile(dat$Temp,.25),"Low")
+head(dat)
+```
+
+3.  Replace the NA values in Ozone of air quality dataframe with the
+    mean value of Ozone column using dplyr.
+
+```{r}
+library(dplyr)
+dat %>% group_by(Month) %>% mutate_at(vars(Ozone), ~ifelse(is.na(.), mean(., na.rm = TRUE), .)) 
+
+#without using dplyr
+dat$Ozone[is.na(dat$Ozone)]=mean(dat$Ozone,na.rm=T)
+head(dat)
+
+```
+
+4.  Replace the NA values in Ozone with the mean value of Ozone column
+    in airquality dataframe where the mean value of Ozone for the same
+    month is applied using (i) dplyr (ii) subset (iii) aggregate
+    function and ifelse (iv) aggregate and mapply (iv) tapply and custom
+    function.
+
+```{r}
+library(dplyr)
+dat %>% 
+  group_by(Month) %>% 
+  mutate_at(vars(Ozone), ~ifelse(is.na(.), mean(., na.rm = TRUE), .)) 
+  
+```
+
+5.  How to reorder a dataframe by particular column(s) w/o using dplyr -
+    order the air quality dataframe by the Month and Temp columns
+    together w/o using dplyr.
+
+```{r}
+dat_1 <- airquality
+head(dat_1)
+head(arrange(dat_1,Month,Temp))
+```
+
+6.  Using a mpg dataset create the following graph
+
+```{r}
+if(!("ggplot2" %in% installed.packages())) install.packages("ggplot2")
+library(ggplot2)
+ggplot(mpg,aes())+
+  geom_bar(mapping=aes(x=manufacturer,fill=manufacturer))
+
+```
+
+7.  Modify the above plot to include the following data (data on the
+    models for each manufacturer):
+
+```{r}
+ggplot(mpg,aes())+
+  geom_bar(mapping=aes(x=manufacturer,fill=model))+coord_flip()
+
+```
+
+8.  Try to modify the plot in q.no. 1 to reorder the bars in the order
+    of the count. (Hint: use reorder function in the y value of the aes
+    function)
+
+```{r}
+ggplot(mpg,aes())+
+  geom_bar(mapping=aes(x=reorder(manufacturer,manufacturer,NROW),fill=manufacturer,y=..count..))+coord_flip()+xlab("Manufacturer_ordered")+ylab("Count")+coord_flip()
+
+```
+
+9.  Build a plot of the count of cars categorised by model and
+    manufacturer. Align the x axis labels vertically so that they are
+    visible as shown below (Hint: use theme function along with
+    element_text function to set the value of axis.text.x)
+
+```{r}
+library(ggplot2)
+ggplot(mpg,aes())+
+  geom_count(aes(x=manufacturer,y=model,colour=manufacturer))+theme(axis.text.x  =element_text(colour = "blue",angle = 90) )
+
+```
+
+10. Find the number of records for each combination of manufacturer and
+    model (i) using dplyr (ii) not using dplyr (iii) using the melt
+    function in the reshape package. This question basically finds the
+    underlying data for the plot in q.no. 4.
+
+```{r}
+if(!("reshape" %in% installed.packages())) install.packages("reshape")
+#(i)
+mpg %>% group_by(manufacturer, model) %>% summarise(n())
+
+#(ii)
+with(mpg,table(manufacturer,model))
+
+#iii)
+
+```
+
+11. Annotate the plot in q.no. 4 with text labels indicating the largest
+    group (largest circle). (Hint: use the annotate function).
+
+```{r}
+
+```
+
+12. Plot the columns Month and Day along with Temp from the dataset
+    airquality in a heat map (raster plot) as below. The colours in the
+    plot should range between yellow and red as shown below (Hint: use
+    scale_fill_gradient)
+
+```{r}
+ggplot(data=airquality,aes(x=Month,y=Day))+
+geom_raster(aes(fill=Temp))+
+  scale_fill_gradient(high="red",low="yellow")  
+```
+
+
+
+
+
+13. Experiment with violin plot on the movies dataset (from ggplot2
+    package) using the variables rating (x axis) and votes (y axis). Try
+    different scales (default, scale_y\_log10, reciprocal, sqrt,
+    manually setting y limit values using ylim function with a limit
+    between say 0 and 30). You may also experiment with
+    scale_y\_continuous function example:
+
+```{r}
+library("ggplot2movies")
+m <- movies;head(m)
+ggplot(data = m) +geom_violin(mapping=aes(rating,votes, fill= cut_width(rating,0.5)),scale = "area")
+ggplot(data = m) +geom_violin(mapping=aes(rating,votes, fill= cut_width(rating,0.5)))+ scale_y_log10()
+ggplot(data = m) +geom_violin(mapping=aes(rating,votes, fill= cut_width(rating,0.5)))+ scale_y_continuous(trans = "reciprocal")
+ggplot(data = m) +geom_violin(mapping=aes(rating,votes, fill= cut_width(rating,0.5)))+ scale_y_sqrt()  
+
+ggplot(data = m) +geom_boxplot(mapping=aes(rating,votes, fill= cut_width(rating,0.5)),scale = "area")
+ggplot(data = m) +geom_boxplot(mapping=aes(rating,votes, fill= cut_width(rating,0.5)))+ scale_y_log10()
+ggplot(data = m) +geom_boxplot(mapping=aes(rating,votes,fill= cut_width(rating,0.5)))+ scale_y_continuous(trans = "reciprocal")
+ggplot(data = m) +geom_boxplot(mapping=aes(rating,votes, fill= cut_width(rating,0.5)))+ scale_y_sqrt()  
+```
+
+
+
+
+14. Attempt to plot an area plot (geom_area) with the column votes in
+    movies dataset. Notice the extreme skewness of the data. Experiment
+    with various ranges for the votes column in order to get a
+    meaningful plot (say xlim between 0 and 200). Also attempt to use a
+    transformed value of x (votes) using log10, i.e. using
+    scale_x\_continuous(trans="log10").
+
+```{r}
+library("ggplot2movies")
+m <- movies;head(m)
+ggplot(data=m, aes(votes)) + geom_area(stat = "bin")
+ggplot(data=m, aes(votes)) + geom_area(stat = "bin") + xlim(0,200)
+ggplot(data=m, aes(votes)) + geom_area(stat = "bin") + scale_x_continuous(trans = "log10")
+
+```
+
+
+15. Attempt a scatter plot of mpg dataset using geom_jitter and the cty and hwy columns. Modify
+the plot by customising your x axis labels and x axis ticks and shape based on a categorical
+columns. Customise the legend using the theme function.
+
+```{r}
+ggplot(mpg,aes())+
+  geom_jitter(aes(x=cty,y=hwy)) 
+ggplot(mpg,aes())+
+  geom_jitter(aes(x=cty,y=hwy, shape = fl)) +
+  labs(x="cty_2") + 
+  theme_linedraw()
+
+```

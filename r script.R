@@ -96,15 +96,9 @@ with(df4,aggregate(df4,list(type),count.na))
 with(df4,group_by(type))
 library(dplyr)
 df4 %>%
+  filter()
   group_by(type) %>%
-  summarise(count.na(npreg),
-            count.na(glu),
-            count.na(bp),
-            count.na(skin),
-            count.na(bmi),
-             count.na(ped),
-             count.na(age)
-            )
+  summarise(n=n())
 with(df4,group_by(type),summarise(n=count.na(n)))
 df4 %>%
   group_by(type) %>%
@@ -139,3 +133,80 @@ df$sport= as.character(df$sport)
 subset(df,sport=="Row" & sex=="f")
 y <- unlist(strsplit(df$sport,"_",FALSE))
 paste0(y)
+
+l<- list(quantile(df$wt,probs = 0))
+l
+df
+
+f7 <- function(x,y,z)
+{
+  which(x>22.6)
+  which(y>=63)
+  which(z!=c("B_Ball"))
+}
+mapply(f7,df[,6],df[,9],df[,13])
+
+f3 <- function(x,y,z)
+{
+  if(x>22.6 & y>= 63 & !(z %in% c("B_Ball","Field","Gym")))
+  {
+    changed <- "A"
+  }
+    else{
+      changed <- "B"
+    }
+  }
+
+df$changed <- mapply(f3,df$bmi,df$lbm,df$spordf[df$bmi>22.6])
+ if(df$bmi>22.6 & df$lbm>=63 &  !(df$sport %in% c("B_Ball","Field","Gym")))
+   {df$new_changed = "A"
+ }
+ else{
+   df$new_changed = "B"
+ }
+
+ library(dplyr)
+ 
+ df %>%
+   filter(bmi>22.6 & lbm >= 63 ) %>%
+  filter(!(sport %in% c("B_Ball","Field","Gym")))
+ 
+ strsplit(as.character(df$sport),"_",T)
+within(df, FOO<-data.frame( strsplit(as.character(df$sport), '_', fixed=FALSE)))
+ 
+ paste(p,collapse = "",recycle0 = F)
+ ?paste
+ 
+ dat=airquality
+ head(dat)
+?by 
+ f4 <- function(x)
+ {
+   sum(is.na(x))
+ }
+with(dat,by(dat,Month,function(x){sapply(x,f4)})) 
+aggregate(dat,by=list(dat$Month),f4)
+with(dat,table())
+library(dplyr)
+airquality %>%
+  group_by(Month) %>%
+  summarise_all(f4)
+
+sapply(subset(dat,is.na(dat)==T,f4))
+with(dat,table(Month,is.na(dat)))
+(dat$Temp)
+mini=quantile(dat$Temp,probs = 0)
+maxi=quantile(dat$Temp,probs = 1)
+temp_breaks = seq(mini,maxi,(maxi-mini)/4)
+temp_cat=temp_breaks[-1]
+dat$temp_categories= with(dat,cut(Temp,temp_breaks,labels =c("Low","Medium","High","Extreme"),include.lowest = T))
+head(dat)
+is.vector(dat$Temp)
+
+  if_else(dat$Temp<=temp_cat,c("Low","Medium","High","Extreme"))
+
+  
+  x <- c(-5:5, NA)
+  x
+  if_else(x < 0, "b", "a")
+if_all()  
