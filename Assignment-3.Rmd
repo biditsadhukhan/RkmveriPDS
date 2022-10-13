@@ -100,11 +100,15 @@ head(dat)
     function.
 
 ```{r}
+#i)
 library(dplyr)
 dat %>% 
   group_by(Month) %>% 
   mutate_at(vars(Ozone), ~ifelse(is.na(.), mean(., na.rm = TRUE), .)) 
   
+#ii)
+tapply(dat$Ozone, dat$Month, mean, na.rm = TRUE)
+dat_1<- subset(dat,(is.na(Ozone)==T & Month ==5)) 
 ```
 
 5.  How to reorder a dataframe by particular column(s) w/o using dplyr -
