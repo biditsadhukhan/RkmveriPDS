@@ -26,8 +26,7 @@ dat=airquality
 #i)
  with(dat,by(dat,Month,function(x){sapply(x,f4)})) 
 #ii)
-    
- aggregate(dat,by=list(dat$Month),f4)
+    aggregate(dat,by=list(dat$Month),f4)
 #iii)
  with(dat,table(complete.cases(dat),Month))
 #iv)
@@ -51,24 +50,32 @@ dat = dat %>%
   mutate(Temp_new=ifelse(Temp>quantile(Temp,.75),"Extreme",ifelse(Temp>quantile(Temp,.5),"High",ifelse(Temp>quantile(Temp,.25),"Medium","Low"))),.after=Temp) 
 
 head(dat)
-  
+ l= quantile(dat$Temp)
+ l
 #ii)
 f1 <- function(x){
-  
+  if(x<quantile(dat$Temp,0.25))
+    {
+      return("Low")
+  }else if (x>quantile(dat$Temp,0.25) && x<quantile(dat$Temp,0.5)){
+       return("Medium")
+  }else if(x>quantile(dat$Temp,0.5) && x<quantile(x,0.75)){
+       return("High")
+     }else return("Extreme")
 }
-table(sapply(dat$Temp,f1))
-dat$Temp
+dat$Temp_4 <- sapply(dat$Temp,f1)
+head(dat)
 #iii)
 brks <- quantile(dat$Temp,probs = seq(0,1,0.25)); brks
 dat$Temp_new2<- cut(dat$Temp,breaks = brks, labels = c("Low","Medium","High","Extreme"),include.lowest = T)
 head(dat)
-
+```
+```{r}
 #iv)
- #dat$Temp[which(dat$temp_3>quantile(dat$Temp,0.75))]
  
-# dat[dat$temp_3 > quantile(dat$temp_3,0.75),]="Extreme"
- #dat$Temp
-
+dat$Temp_5 <- ifelse(dat$Temp>quantile(dat$Temp,.75),"Extreme",ifelse(dat$Temp>quantile(dat$Temp,.5),"High",ifelse(dat$Temp>quantile(dat$Temp,.25),"Medium","Low")))
+```
+```{r}
 #v)
 dat$Temp_lvl3=replace(dat$Temp,dat$Temp>quantile(dat$Temp,.75),"Extreme")
 
@@ -78,6 +85,7 @@ dat$Temp_lvl3=replace(dat$Temp_lvl3,dat$Temp>quantile(dat$Temp,.25)&dat$Temp<=qu
 
 dat$Temp_lvl3=replace(dat$Temp_lvl3,dat$Temp<=quantile(dat$Temp,.25),"Low")
 head(dat)
+
 ```
 
 3.  Replace the NA values in Ozone of air quality dataframe with the
@@ -105,8 +113,20 @@ library(dplyr)
 dat %>% 
   group_by(Month) %>% 
   mutate_at(vars(Ozone), ~ifelse(is.na(.), mean(., na.rm = TRUE), .)) 
-  
+```  
+```{r}
 #ii)
+f1 <- function(x){
+  ifelse(is.na(x), mean(x, na.rm = T), x)
+} 
+l <- aggregate(Ozone~Month,data=airquality,f1)
+l1 <-  l[,2][[1]]
+l2 <- l[,2][[2]]
+l3 <- l[,2][[3]]
+l4 <- l[,2][[4]]
+l5 <- l[,2][[5]]
+
+#iv)
 tapply(dat$Ozone, dat$Month, mean, na.rm = TRUE)
 dat_1<- subset(dat,(is.na(Ozone)==T & Month ==5)) 
 ```
@@ -252,6 +272,6 @@ ggplot(mpg,aes())+
 ggplot(mpg,aes())+
   geom_jitter(aes(x=cty,y=hwy, shape = fl)) +
   labs(x="cty_2") + 
-  theme_linedraw()
+  theme_minimal()
 
 ```

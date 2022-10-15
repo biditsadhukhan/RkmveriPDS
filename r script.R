@@ -210,3 +210,17 @@ is.vector(dat$Temp)
   x
   if_else(x < 0, "b", "a")
 if_all()  
+
+
+
+library(ggplot2)
+ggplot(mpg,aes())+
+  geom_count(aes(x=manufacturer,y=model,colour=manufacturer))+theme(axis.text.x  =element_text(colour = "blue",angle = 90) )
+head(mpg)
+
+names(airquality) <- tolower(names(airquality))
+melt(airquality, id=c("month", "day"))
+melt(airquality)
+
+
+subset(dat,is.na(Ozone)==T)
